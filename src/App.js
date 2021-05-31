@@ -13,7 +13,7 @@ function App() {
       <header className="header">
         <NavBar setTheme={setTheme}></NavBar>
       </header>
-      <div class="d-flex align-items-stretch">
+      <div className="d-flex align-items-stretch">
         <SideBar></SideBar>
         <BrowserRouter>
           <Route path="/"><Dashboard></Dashboard></Route>

@@ -21,7 +21,7 @@ const SideBar = (props) => {
       <span className="heading">Main</span>
       <ul className="list-unstyled">
         {routes.map((route, i) => {
-         return <NavItem route={route.path} label={route.label} icon={route.icon}></NavItem>;
+         return <NavItem key={i} route={route.path} label={route.label} icon={route.icon}></NavItem>;
         })}
       </ul>
     </nav>
