@@ -3,6 +3,7 @@ import LineChart from "../components/charts/LineChart";
 import StatisticBlock from "../components/charts/StatisticBlock";
 import PageContent from "../components/layout/PageContent";
 import Config from "../config/config";
+import {withAuthenticationRequired} from '@auth0/auth0-react';
 
 const Dashboard = () => {
   const now = new Date();
@@ -81,4 +82,7 @@ const Dashboard = () => {
   );
 };
 
-export default Dashboard;
+export default withAuthenticationRequired(Dashboard, {
+  // Show a message while the user waits to be redirected to the login page.
+  onRedirecting: () => (<div>Redirecting you to the login page...</div>)
+});
