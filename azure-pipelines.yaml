@@ -7,6 +7,9 @@ trigger:
 resources:
   - repo: self
 
+variables:
+  - group: tempaast-ui
+
 
 stages:
 - stage: Build
@@ -42,3 +45,27 @@ stages:
           artifactName: '$(Build.BuildId).zip' 
           publishLocation: 'Container' # Options: container, filePath
           targetPath: # Required when publishLocation == FilePath
+
+  - job: Deploy
+    displayName: Deploy
+    pool:
+      vmImage: 'ubuntu-latest'
+      timeoutInMinutes: 10
+    steps:
+      - task: ExtractFiles@1
+        displayName: Extract Build Artifact
+        inputs:
+          archiveFilePatterns: '**/$(Build.BuildId).zip' 
+          destinationFolder: $(System.DefaultWorkingDirectory)/$(Build.BuildId)
+          cleanDestinationFolder: true 
+          overwriteExistingFiles: false
+      
+      - task: AzureCLI@2
+        displayName: Deploy Container
+        inputs:
+          azureSubscription: dwtech
+          scriptType: ps
+          scriptLocation: inlineScript
+          inlineScript: |
+            az storage blob upload-batch -s $(System.DefaultWorkingDirectory)/$(Build.BuildId) -d '$web' --account-name $(storageAccountName) --account-key $(containerKey)
+              
