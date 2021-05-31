@@ -44,7 +44,6 @@ stages:
           pathToPublish: '$(Build.ArtifactStagingDirectory)' 
           artifactName: '$(Build.BuildId).zip' 
           publishLocation: 'Container' # Options: container, filePath
-          targetPath: # Required when publishLocation == FilePath
 
   - job: Deploy
     displayName: Deploy
@@ -67,5 +66,5 @@ stages:
           scriptType: bash
           scriptLocation: inlineScript
           inlineScript: |
-            az storage blob upload-batch -s $(System.DefaultWorkingDirectory)/$(Build.BuildId) -d '$web' --account-name $(storageAccountName) --account-key $(containerKey)
+            az storage blob upload-batch -s $(Build.BuildId) -d '$web' --account-name $(storageAccountName) --account-key $(containerKey)
               
