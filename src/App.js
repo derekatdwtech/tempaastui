@@ -1,23 +1,24 @@
-import logo from './logo.svg';
-import './App.css';
+import logo from "./logo.svg";
+import NavBar from "./components/navbar/NavBar";
+import SideBar from "./components/sidebar/Sidebar";
+import { BrowserRouter, Route } from "react-router-dom";
+import Dashboard from "./pages/Dashboard";
+import { useState } from "react";
 
 function App() {
+  const [theme, setTheme] = useState("default");
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+    <div>
+      <link rel="stylesheet" type="text/css" href={"css/style." + theme + ".css"} />
+      <header className="header">
+        <NavBar setTheme={setTheme}></NavBar>
       </header>
+      <div class="d-flex align-items-stretch">
+        <SideBar></SideBar>
+        <BrowserRouter>
+          <Route path="/"><Dashboard></Dashboard></Route>
+        </BrowserRouter>
+      </div>
     </div>
   );
 }

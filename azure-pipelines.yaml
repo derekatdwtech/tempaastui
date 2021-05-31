@@ -1,0 +1,28 @@
+trigger:
+  branches:
+    include:
+    - feature/*
+    - master
+
+resources:
+  - repo: self
+
+
+stages:
+- stage: Build
+  jobs:
+  - job: Build
+    displayName: Build 
+    pool:
+      vmImage: 'ubuntu-latest'
+      timeoutInMinutes: 10
+    steps:
+      - checkout: self
+        persistCredentials: true
+
+      - bash: |
+          npm install
+        displayName: "NPM Install"
+
+      - bash: |
+          npm run build
