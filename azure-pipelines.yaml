@@ -26,3 +26,19 @@ stages:
 
       - bash: |
           npm run build
+
+      - task: ArchiveFiles@2
+        displayName: Collect Build
+        inputs:
+          rootFolderOrFile: 'build' 
+          includeRootFolder: true 
+          archiveType: 'zip' 
+          archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip' 
+          replaceExistingArchive: true 
+      
+      - task: PublishBuildArtifacts@1
+        inputs:
+          pathToPublish: '$(Build.ArtifactStagingDirectory)' 
+          artifactName: '$(Build.BuildId).zip' 
+          publishLocation: 'Container' # Options: container, filePath
+          targetPath: # Required when publishLocation == FilePath
