@@ -43,8 +43,6 @@ stages:
         inputs:
           pathToPublish: '$(Build.ArtifactStagingDirectory)' 
           artifactName: '$(Build.BuildId).zip' 
-          publishLocation: 'filePath' # Options: container, filePath
-          targetPath: $(Build.ArtifactStagingDirectory)/output
 
   - job: Deploy
     displayName: Deploy
@@ -56,10 +54,10 @@ stages:
       - task: ExtractFiles@1
         displayName: Extract Build Artifact
         inputs:
-          archiveFilePatterns: '$(Build.ArtifactStagingDirectory)/output/$(Build.BuildId).zip' 
+          archiveFilePatterns: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip' 
           destinationFolder: $(Build.ArtifactStagingDirectory)/deploy
           cleanDestinationFolder: true 
-          overwriteExistingFiles: false
+          overwriteExistingFiles: true
       
       - task: AzureCLI@2
         displayName: Deploy Container
