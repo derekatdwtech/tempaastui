@@ -55,8 +55,8 @@ stages:
       - task: ExtractFiles@1
         displayName: Extract Build Artifact
         inputs:
-          archiveFilePatterns: '$(Build.ArtifactStagingDirectory)/*.zip' 
-          destinationFolder: $(System.DefaultWorkingDirectory)/
+          archiveFilePatterns: '$(System.DefaultWorkingDirectory)/*.zip' 
+          destinationFolder: $(System.DefaultWorkingDirectory)/deploy
           cleanDestinationFolder: true 
           overwriteExistingFiles: false
       
@@ -67,5 +67,5 @@ stages:
           scriptType: ps
           scriptLocation: inlineScript
           inlineScript: |
-            az storage blob upload-batch -s $(System.DefaultWorkingDirectory)/ -d '$web' --account-name $(storageAccountName) --account-key $(containerKey)
+            az storage blob upload-batch -s $(System.DefaultWorkingDirectory)/deploy/. -d '$web' --account-name $(storageAccountName) --account-key $(containerKey)
               

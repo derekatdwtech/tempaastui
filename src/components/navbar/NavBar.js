@@ -1,8 +1,10 @@
 import React from "react";
 import NavBarHeader from "./NavBarHeader";
+import { useAuth0 } from "@auth0/auth0-react";
 
 const NavBar = (props) => {
   const themes = ["default", "blue", "green", "pink", "red", "sea", "violet"];
+  const { isLoading, user, isAuthenticated, logout } = useAuth0();
   return (
     <div>
       <nav className="navbar navbar-expand-lg">
@@ -41,13 +43,16 @@ const NavBar = (props) => {
                 );
               })}
             </div>
+            {
+              isAuthenticated &&
             <div class="list-inline-item logout">
-              <a id="logout" href="login.html" class="nav-link">
+              <a id="logout" onClick={() =>   logout({ returnTo: window.location.origin })} class="nav-link">
                 {" "}
                 <span class="d-none d-sm-inline">Logout </span>
                 <i class="icon-logout"></i>
               </a>
-            </div>
+            </div> 
+          }
           </div>
         </div>
       </nav>

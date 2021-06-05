@@ -1,19 +1,39 @@
 import NavBar from "./components/navbar/NavBar";
 import SideBar from "./components/sidebar/Sidebar";
-import { BrowserRouter, Route } from "react-router-dom";
+import { Route, Router, Switch } from "react-router-dom";
 import Dashboard from "./pages/Dashboard";
 import { useState } from "react";
-import { useAuth0 } from "@auth0/auth0-react";
-import Loader from "./pages/loading";
+import {
+  Auth0Provider,
+  withAuthenticationRequired,
+  useAuth0,
+} from "@auth0/auth0-react";
+import { createBrowserHistory } from "history";
+import Profile from "./pages/Profile";
+import Devices from './pages/Devices';
 
-function App() {
+export const history = createBrowserHistory();
+
+const ProtectedRoute = ({ component, ...args }) => (
+  <Route component={withAuthenticationRequired(component)} {...args} />
+);
+
+const onRedirectCallback = (appState) => {
+  // Use the router's history module to replace the url
+  history.replace(appState?.returnTo || window.location.pathname);
+};
+
+export default function App() {
   const [theme, setTheme] = useState("default");
+  const { isLoading, isAuthenticated, loginWithRedirect } = useAuth0();
 
-  const { isLoading, isAuthenticated, error, user, loginWithRedirect, logout } =
-    useAuth0();
-
-  if (!isLoading) {
-    return (
+  return (
+    <Auth0Provider
+      domain="tempaast.us.auth0.com"
+      clientId="e5d6SnEoInkzn10MHteTwCU4URJx2Oa7"
+      redirectUri={window.location.origin}
+      onRedirectCallback={onRedirectCallback}
+    >
       <div>
         <link
           rel="stylesheet"
@@ -23,19 +43,25 @@ function App() {
         <header className="header">
           <NavBar setTheme={setTheme}></NavBar>
         </header>
-        <div className="d-flex align-items-stretch">
-          <SideBar></SideBar>
-          <BrowserRouter>
-            <Route path="/">
-              <Dashboard></Dashboard>
-            </Route>
-          </BrowserRouter>
-        </div>
+          <div className="d-flex align-items-stretch">
+            <SideBar></SideBar>
+            <Router history={history}>
+              <Switch>
+                <ProtectedRoute
+                  exact
+                  path="/"
+                  component={Dashboard}
+                ></ProtectedRoute>
+                <ProtectedRoute
+                  path="/profile"
+                  component={Profile}
+                ></ProtectedRoute>
+                <ProtectedRoute path="/devices"
+                component={Devices}></ProtectedRoute>
+              </Switch>
+            </Router>
+          </div>
       </div>
-    );
-  } else {
-    return <Loader></Loader>;
-  }
+    </Auth0Provider>
+  );
 }
-
-export default App;

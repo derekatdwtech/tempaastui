@@ -1,7 +1,7 @@
 import React from "react";
 
 const NavItem = (props) => {
-  const activeRoute = window.location.pathname == props.route ? "active" : "";
+  const activeRoute = window.location.pathname === props.route ? "active" : "";
 
   return (
     <li className={activeRoute}>

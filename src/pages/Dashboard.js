@@ -5,6 +5,7 @@ import PageContent from "../components/layout/PageContent";
 import Config from "../config/config";
 import { withAuthenticationRequired } from "@auth0/auth0-react";
 import { useAuth0 } from '@auth0/auth0-react';
+import Loader from './loading';
 
 const Dashboard = () => {
   const now = new Date();
@@ -25,7 +26,6 @@ const Dashboard = () => {
     )
       .then((res) => {
         if (res.ok) {
-          console.log(res.url);
           return res.json();
         } else {
           console.log(res.json());
@@ -83,7 +83,4 @@ const Dashboard = () => {
   );
 };
 
-export default withAuthenticationRequired(Dashboard, {
-  // Show a message while the user waits to be redirected to the login page.
-  onRedirecting: () => <div>Redirecting you to the login page...</div>,
-});
+export default Dashboard;

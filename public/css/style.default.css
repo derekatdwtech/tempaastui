@@ -16,6 +16,8 @@ body {
   position: relative;
   height: 100vh;
   width: 100vw;
+  background: #22252a;
+
 }
 
 section {
@@ -732,6 +734,7 @@ nav#sidebar {
   background: #2d3035;
   color: #6a6c70;
   border-right: 1px solid #34373d;
+  height:100vh;
   /* shrinked navbar */
 }
 
@@ -2858,7 +2861,8 @@ body {
   font-weight: 400;
   line-height: 1.5;
   color: #8a8d93;
-  background-color: #fff;
+  background: #22252a;
+
 }
 
 a {
