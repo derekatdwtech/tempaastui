@@ -48,6 +48,7 @@ stages:
 
   - job: Deploy
     displayName: Deploy
+    dependsOn: 'Build'
     pool:
       vmImage: 'windows-2019'
       timeoutInMinutes: 10
@@ -55,8 +56,8 @@ stages:
       - task: ExtractFiles@1
         displayName: Extract Build Artifact
         inputs:
-          archiveFilePatterns: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip' 
-          destinationFolder: $(Build.ArtifactStagingDirectory)/deploy
+          archiveFilePatterns: '$(System.DefaultWorkingDirectory)/$(Build.BuildId).zip' 
+          destinationFolder: $(System.DefaultWorkingDirectory)/deploy
           cleanDestinationFolder: true 
           overwriteExistingFiles: false
       
@@ -67,5 +68,5 @@ stages:
           scriptType: bash
           scriptLocation: inlineScript
           inlineScript: |
-            az storage blob upload-batch -s $(Build.ArtifactStagingDirectory)/deploy -d '$web' --account-name $(storageAccountName) --account-key $(containerKey)
+            az storage blob upload-batch -s $(System.DefaultWorkingDirectory)/deploy -d '$web' --account-name $(storageAccountName) --account-key $(containerKey)
               
