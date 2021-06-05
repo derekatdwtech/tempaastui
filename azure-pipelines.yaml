@@ -34,7 +34,7 @@ stages:
         displayName: Collect Build
         inputs:
           rootFolderOrFile: 'build' 
-          includeRootFolder: true 
+          includeRootFolder: false
           archiveType: 'zip' 
           archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip' 
           replaceExistingArchive: true 
@@ -44,7 +44,7 @@ stages:
           pathToPublish: '$(Build.ArtifactStagingDirectory)' 
           artifactName: '$(Build.BuildId).zip' 
           publishLocation: 'filePath' # Options: container, filePath
-          targetPath: $(System.DefaultWorkingDirectory)
+          targetPath: $(Build.ArtifactStagingDirectory)/output
 
   - job: Deploy
     displayName: Deploy
@@ -56,8 +56,8 @@ stages:
       - task: ExtractFiles@1
         displayName: Extract Build Artifact
         inputs:
-          archiveFilePatterns: '$(System.DefaultWorkingDirectory)/$(Build.BuildId).zip' 
-          destinationFolder: $(System.DefaultWorkingDirectory)/deploy
+          archiveFilePatterns: '$(Build.ArtifactStagingDirectory)/output/$(Build.BuildId).zip' 
+          destinationFolder: $(Build.ArtifactStagingDirectory)/deploy
           cleanDestinationFolder: true 
           overwriteExistingFiles: false
       
@@ -68,5 +68,5 @@ stages:
           scriptType: bash
           scriptLocation: inlineScript
           inlineScript: |
-            az storage blob upload-batch -s $(System.DefaultWorkingDirectory)/deploy -d '$web' --account-name $(storageAccountName) --account-key $(containerKey)
+            az storage blob upload-batch -s $(Build.ArtifactStagingDirectory)/deploy/. -d '$web' --account-name $(storageAccountName) --account-key $(containerKey)
               
