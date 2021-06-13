@@ -10,6 +10,7 @@ import {
 import { createBrowserHistory } from "history";
 import Profile from "./pages/Profile";
 import Devices from './pages/Devices';
+import Alerts from "./pages/Alerts";
 
 export const history = createBrowserHistory();
 
@@ -57,6 +58,7 @@ export default function App() {
                 ></ProtectedRoute>
                 <ProtectedRoute path="/devices"
                 component={Devices}></ProtectedRoute>
+                <ProtectedRoute path="/alerts" component={Alerts}></ProtectedRoute>
               </Switch>
             </Router>
           </div>

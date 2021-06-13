@@ -18,6 +18,12 @@ const routes = [{
     icon: "icon-computer"
 },
 {
+    path:"/alerts",
+    label: "Alerts",
+    component: "Alerts",
+    icon: "fa fa-bell-o"
+},
+{
     path: "https://github.com/derekatdwtech/tempaastui/issues",
     label: "Support",
     component: "",
