@@ -7,9 +7,11 @@ const Profile = () => {
   const { user, getAccessTokenSilently } = useAuth0();
   const [apiKeys, setApiKeys] = useState([]);
   const [apiButtonDiabled, setApiButtonDisabled] = useState(false);
-  const [token, setToken] = useState();
-  const getApiKeys = () => {
+
+  const getApiKeys = async () => {
+    let token = await getAccessTokenSilently();
     const headers = { Authorization: `Bearer ${token}` };
+
     fetch(Config.apiUrl + "/api/key", {
       headers: headers,
     })
@@ -20,7 +22,8 @@ const Profile = () => {
       });
   };
 
-  const createApiKey = () => {
+  const createApiKey = async () => {
+    let token = await getAccessTokenSilently();
     setApiButtonDisabled(true);
     const headers = { Authorization: `Bearer ${token}` };
 
@@ -38,7 +41,8 @@ const Profile = () => {
       });
   };
 
-  const deleteApiKey = (apiKey) => {
+  const deleteApiKey = async (apiKey) => {
+    let token = await getAccessTokenSilently();
     const headers = { Authorization: `Bearer ${token}` };
 
     fetch(`${Config.apiUrl}/api/key?apiKey=${apiKey}`, {
@@ -53,11 +57,8 @@ const Profile = () => {
   };
 
   useEffect(() => {
-    getAccessTokenSilently().then((data) => {
-      setToken(data);
-    });
     getApiKeys();
-  }, [user, token, setToken, getAccessTokenSilently]);
+  }, [user]);
 
   return (
     <PageContent title="Profile">
@@ -102,37 +103,37 @@ const Profile = () => {
                 </div>
                 <hr></hr>
                 <div className="block-body">
-                  <form class="form-horizontal">
-                    <div class="form-group row">
-                      <label class="col-sm-3 form-control-label">Email</label>
-                      <div class="col-sm-9">
+                  <form className="form-horizontal">
+                    <div className="form-group row">
+                      <label className="col-sm-3 form-control-label">Email</label>
+                      <div className="col-sm-9">
                         <input
                           id="inputHorizontalSuccess"
                           type="email"
                           placeholder="Email Address"
-                          class="form-control form-control-success"
+                          className="form-control form-control-success"
                           disabled
                           value={user.email}
                         />
                       </div>
                     </div>
-                    <div class="form-group row">
-                      <label class="col-sm-3 form-control-label">
+                    <div className="form-group row">
+                      <label className="col-sm-3 form-control-label">
                         Full Name
                       </label>
-                      <div class="col-sm-9">
+                      <div className="col-sm-9">
                         <input
                           id="inputHorizontalWarning"
                           type="text"
                           placeholder=""
-                          class="form-control form-control-warning"
+                          className="form-control form-control-warning"
                           value={user.nickname}
                         />
                       </div>
                     </div>
-                    <div class="form-group row">
-                      <div class="col-sm-9 offset-sm-3">
-                        <button class="btn btn-primary">Save</button>
+                    <div className="form-group row">
+                      <div className="col-sm-9 offset-sm-3">
+                        <button className="btn btn-primary">Save</button>
                       </div>
                     </div>
                   </form>
@@ -153,7 +154,7 @@ const Profile = () => {
                     disabled={apiButtonDiabled}
                     type=""
                     onClick={() => createApiKey()}
-                    class="btn btn-primary"
+                    className="btn btn-primary"
                   >
                     Generate Api Key!
                   </button>
@@ -182,7 +183,7 @@ const Profile = () => {
                             <td>
                               <button
                                 type=""
-                                class="btn btn-danger"
+                                className="btn btn-danger"
                                 onClick={() => deleteApiKey(a.apiKey)}
                               >
                                 Delete Key?

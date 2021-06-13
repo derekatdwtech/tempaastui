@@ -8,56 +8,56 @@ const FormModal = (props) => {
       role="dialog"
       aria-labelledby="exampleModalLabel"
       aria-hidden="true"
-      class="modal fade text-left"
+      className="modal fade text-left"
     >
-      <div role="document" class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <strong id="exampleModalLabel" class="modal-title">
+      <div role="document" className="modal-dialog">
+        <div className="modal-content">
+          <div className="modal-header">
+            <strong id="exampleModalLabel" className="modal-title">
               Signin Modal
             </strong>
             <button
               type="button"
               data-dismiss="modal"
               aria-label="Close"
-              class="close"
+              className="close"
             >
               <span aria-hidden="true">×</span>
             </button>
           </div>
-          <div class="modal-body">
+          <div className="modal-body">
             <p>Lorem ipsum dolor sit amet consectetur.</p>
             <form>
-              <div class="form-group">
+              <div className="form-group">
                 <label>Email</label>
                 <input
                   type="email"
                   placeholder="Email Address"
-                  class="form-control"
+                  className="form-control"
                 />
               </div>
-              <div class="form-group">
+              <div className="form-group">
                 <label>Password</label>
                 <input
                   type="password"
                   placeholder="Password"
-                  class="form-control"
+                  className="form-control"
                 />
               </div>
-              <div class="form-group">
-                <input type="submit" value="Signin" class="btn btn-primary" />
+              <div className="form-group">
+                <input type="submit" value="Signin" className="btn btn-primary" />
               </div>
             </form>
           </div>
-          <div class="modal-footer">
+          <div className="modal-footer">
             <button
               type="button"
               data-dismiss="modal"
-              class="btn btn-secondary"
+              className="btn btn-secondary"
             >
               Close
             </button>
-            <button type="button" class="btn btn-primary">
+            <button type="button" className="btn btn-primary">
               Save changes
             </button>
           </div>

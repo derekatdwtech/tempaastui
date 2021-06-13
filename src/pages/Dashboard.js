@@ -4,6 +4,7 @@ import LineChart from "../components/charts/LineChart";
 import StatisticBlock from "../components/charts/StatisticBlock";
 import PageContent from "../components/layout/PageContent";
 import Config from "../config/config";
+import Loader from "./loading";
 
 const Dashboard = () => {
   const now = new Date();
@@ -17,14 +18,15 @@ const Dashboard = () => {
     new Date(now.setMinutes(now.getMinutes() - 60)).toISOString()
   );
 
-  const { getAccessTokenSilently } =
-    useAuth0();
-  
-  const getTemperatureDate = (startTime, endTime) => {
+  const { getAccessTokenSilently } = useAuth0();
+  const [isLoading, setIsLoading] = useState(true);
+
+  const getTemperatureData = (probe, startTime, endTime) => {
     let labels = [];
     let readings = [];
+    setIsLoading(true);
     fetch(
-      `${Config.apiUrl}/temperature?probeName=${Config.deviceId}&startTime=${endTime}&endTime=${startTime}`
+      `${Config.apiUrl}/temperature?probeName=${probe}&startTime=${endTime}&endTime=${startTime}`
     )
       .then((res) => {
         if (res.ok) {
@@ -43,18 +45,9 @@ const Dashboard = () => {
         });
         setTempData(readings);
         setTempLabels(labels);
+        setIsLoading(false);
       });
   };
-
-  const getProbeConfigs = async () => {
-    const token = await getAccessTokenSilently();
-    let headers = { Authorization: `Bearer ${token}` };
-    fetch(`${Config.apiUrl}/api/probe/config/list`, {headers:headers})
-    .then((res) => res.json())
-    .then((data) => {
-      setProbes(data)
-    });
-  }
 
   const average = (numbers) => {
     var sum = 0;
@@ -68,31 +61,48 @@ const Dashboard = () => {
     }
   };
 
-  useEffect(() => {
-    getTemperatureDate(startTimeFilter, endTimeFilter);
-    getProbeConfigs();
+  useEffect(async () => {
+    const token = await getAccessTokenSilently();
+    let headers = { Authorization: `Bearer ${token}` };
+    await fetch(`${Config.apiUrl}/api/probe/config/list`, {
+      headers: headers,
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        setProbes(data);
+        let probe = data[0].rowKey;
+        getTemperatureData(probe, startTimeFilter, endTimeFilter);
+      });
+
+    console.log(startTimeFilter, endTimeFilter);
   }, []);
 
   return (
     <PageContent title="Dashboard" showFilters={true}>
-      <section className="no-padding-top no-padding-bottom">
-        <div className="container-fluid">
-          <div className="row">
-            <StatisticBlock title="Temperature Probes Active" value={probes.length} />
-            <StatisticBlock
-              title="Average Temperature"
-              value={average(tempData)}
-            />
+      {!isLoading && (
+        <section className="no-padding-top no-padding-bottom">
+          <div className="container-fluid">
+            <div className="row">
+              <StatisticBlock
+                title="Temperature Probes Active"
+                value={probes.length}
+              />
+              <StatisticBlock
+                title="Average Temperature"
+                value={average(tempData)}
+              />
+            </div>
+            <div className="row">
+              <LineChart
+                data={tempData}
+                labels={tempLabels}
+                title="Temperature"
+              ></LineChart>
+            </div>
           </div>
-          <div className="row">
-            <LineChart
-              data={tempData}
-              labels={tempLabels}
-              title="Temperature"
-            ></LineChart>
-          </div>
-        </div>
-      </section>
+        </section>
+      )}
+      {isLoading && <Loader></Loader>}
     </PageContent>
   );
 };

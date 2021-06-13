@@ -45,11 +45,11 @@ const NavBar = (props) => {
             </div>
             {
               isAuthenticated &&
-            <div class="list-inline-item logout">
-              <a id="logout" onClick={() =>   logout({ returnTo: window.location.origin })} class="nav-link">
+            <div className="list-inline-item logout">
+              <a id="logout" onClick={() =>   logout({ returnTo: window.location.origin })} className="nav-link">
                 {" "}
-                <span class="d-none d-sm-inline">Logout </span>
-                <i class="icon-logout"></i>
+                <span className="d-none d-sm-inline">Logout </span>
+                <i className="icon-logout"></i>
               </a>
             </div> 
           }
