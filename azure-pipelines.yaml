@@ -29,15 +29,16 @@ stages:
 
       - bash: |
           npm run build
+        displayName: Build Project
 
       - task: AzureCLI@2
-        displayName: Deploy Container
+        displayName: Clean And Deploy Container
         inputs:
           azureSubscription: dwtech
           scriptType: bash
           scriptLocation: inlineScript
           inlineScript: |
-            az storage blob delete-batch -s $web --account-name $(storageAccountName) --account-key $(containerKey)
+            az storage blob delete-batch -s '$web' --account-name $(storageAccountName) --account-key $(containerKey)
             az storage blob upload-batch -s build/. -d '$web' --account-name $(storageAccountName) --account-key $(containerKey)
 
       # - task: ArchiveFiles@2
