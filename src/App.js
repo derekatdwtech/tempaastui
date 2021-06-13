@@ -5,8 +5,7 @@ import Dashboard from "./pages/Dashboard";
 import { useState } from "react";
 import {
   Auth0Provider,
-  withAuthenticationRequired,
-  useAuth0,
+  withAuthenticationRequired
 } from "@auth0/auth0-react";
 import { createBrowserHistory } from "history";
 import Profile from "./pages/Profile";
@@ -25,7 +24,6 @@ const onRedirectCallback = (appState) => {
 
 export default function App() {
   const [theme, setTheme] = useState("default");
-  const { isLoading, isAuthenticated, loginWithRedirect } = useAuth0();
 
   return (
     <Auth0Provider
@@ -33,6 +31,7 @@ export default function App() {
       clientId="e5d6SnEoInkzn10MHteTwCU4URJx2Oa7"
       redirectUri={window.location.origin}
       onRedirectCallback={onRedirectCallback}
+      audience="app.tempaast.com"
     >
       <div>
         <link

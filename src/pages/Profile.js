@@ -1,15 +1,18 @@
 import React, { useEffect, useState } from "react";
 import PageContent from "../components/layout/PageContent";
-import { useAuth0, withAuthenticationRequired } from "@auth0/auth0-react";
+import { useAuth0 } from "@auth0/auth0-react";
 import Config from "../config/config";
 
 const Profile = () => {
-  const { user, isLoading, isAuthenticated } = useAuth0();
+  const { user, getAccessTokenSilently } = useAuth0();
   const [apiKeys, setApiKeys] = useState([]);
   const [apiButtonDiabled, setApiButtonDisabled] = useState(false);
-
+  const [token, setToken] = useState();
   const getApiKeys = () => {
-    fetch(Config.apiUrl + "/api/key?userId=" + user.sub.split("|")[1])
+    const headers = { Authorization: `Bearer ${token}` };
+    fetch(Config.apiUrl + "/api/key", {
+      headers: headers,
+    })
       .then((res) => res.json())
       .then((data) => {
         console.log(data);
@@ -19,8 +22,11 @@ const Profile = () => {
 
   const createApiKey = () => {
     setApiButtonDisabled(true);
-    fetch(Config.apiUrl + "/api/key?userId=" + user.sub.split("|")[1], {
+    const headers = { Authorization: `Bearer ${token}` };
+
+    fetch(Config.apiUrl + "/api/key", {
       method: "POST",
+      headers: headers,
     })
       .then((res) => res.json())
       .then((data) => {
@@ -33,14 +39,12 @@ const Profile = () => {
   };
 
   const deleteApiKey = (apiKey) => {
-    fetch(
-      `${Config.apiUrl}/api/key?apiKey=${apiKey}&userId=${
-        user.sub.split("|")[1]
-      }`,
-      {
-        method: "DELETE",
-      }
-    ).then((res) => {
+    const headers = { Authorization: `Bearer ${token}` };
+
+    fetch(`${Config.apiUrl}/api/key?apiKey=${apiKey}`, {
+      method: "DELETE",
+      headers: headers,
+    }).then((res) => {
       if (res.ok) {
         console.log(res.url);
         setApiKeys(apiKeys.filter((item) => item.apiKey !== apiKey));
@@ -49,8 +53,11 @@ const Profile = () => {
   };
 
   useEffect(() => {
+    getAccessTokenSilently().then((data) => {
+      setToken(data);
+    });
     getApiKeys();
-  }, [user]);
+  }, [user, token, setToken, getAccessTokenSilently]);
 
   return (
     <PageContent title="Profile">
@@ -125,10 +132,7 @@ const Profile = () => {
                     </div>
                     <div class="form-group row">
                       <div class="col-sm-9 offset-sm-3">
-                        <button
-                          
-                          class="btn btn-primary"
-                        >Save</button>
+                        <button class="btn btn-primary">Save</button>
                       </div>
                     </div>
                   </form>
@@ -190,7 +194,7 @@ const Profile = () => {
                     </table>
                   </div>
                 )}
-                {apiKeys.length == 0 && (
+                {apiKeys.length === 0 && (
                   <div className="block-body">
                     <p>
                       <i>

@@ -1,16 +1,15 @@
+import { useAuth0 } from "@auth0/auth0-react";
 import React, { useEffect, useState } from "react";
 import LineChart from "../components/charts/LineChart";
 import StatisticBlock from "../components/charts/StatisticBlock";
 import PageContent from "../components/layout/PageContent";
 import Config from "../config/config";
-import { withAuthenticationRequired } from "@auth0/auth0-react";
-import { useAuth0 } from '@auth0/auth0-react';
-import Loader from './loading';
 
 const Dashboard = () => {
   const now = new Date();
   const [tempData, setTempData] = useState([]);
   const [tempLabels, setTempLabels] = useState();
+  const [probes, setProbes] = useState([]);
   const [startTimeFilter, setStartTimeFilter] = useState(
     new Date(now).toISOString()
   );
@@ -18,6 +17,9 @@ const Dashboard = () => {
     new Date(now.setMinutes(now.getMinutes() - 60)).toISOString()
   );
 
+  const { getAccessTokenSilently } =
+    useAuth0();
+  
   const getTemperatureDate = (startTime, endTime) => {
     let labels = [];
     let readings = [];
@@ -44,6 +46,16 @@ const Dashboard = () => {
       });
   };
 
+  const getProbeConfigs = async () => {
+    const token = await getAccessTokenSilently();
+    let headers = { Authorization: `Bearer ${token}` };
+    fetch(`${Config.apiUrl}/api/probe/config/list`, {headers:headers})
+    .then((res) => res.json())
+    .then((data) => {
+      setProbes(data)
+    });
+  }
+
   const average = (numbers) => {
     var sum = 0;
     if (numbers.length > 0) {
@@ -58,13 +70,15 @@ const Dashboard = () => {
 
   useEffect(() => {
     getTemperatureDate(startTimeFilter, endTimeFilter);
+    getProbeConfigs();
   }, []);
+
   return (
     <PageContent title="Dashboard" showFilters={true}>
       <section className="no-padding-top no-padding-bottom">
         <div className="container-fluid">
           <div className="row">
-            <StatisticBlock title="Temperature Probes Active" value={1} />
+            <StatisticBlock title="Temperature Probes Active" value={probes.length} />
             <StatisticBlock
               title="Average Temperature"
               value={average(tempData)}

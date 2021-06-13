@@ -7,7 +7,7 @@ const routes = [{
 },
 {
     path: "/profile",
-    label: "Profle",
+    label: "Profile",
     component: "Profile",
     icon: "icon-user"
 },

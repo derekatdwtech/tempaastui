@@ -9,7 +9,7 @@ return(
                <i className="icon-computer fa-4x" style={{textAlign:"center"}}></i>
            </div>
            <strong>Device Name: {props.name}</strong>
-           <p></p>
+           <p>{props.subName}</p>
        </div>
     </div>
 )
