@@ -6,7 +6,6 @@ import Cardbutton from "../components/buttons/CardButton";
 import Loader from "./loading";
 
 const Alerts = () => {
-
   return (
     <PageContent title="Alerting">
       <section className="no-padding-top no-padding-bottom">

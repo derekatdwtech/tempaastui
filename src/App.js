@@ -3,13 +3,10 @@ import SideBar from "./components/sidebar/Sidebar";
 import { Route, Router, Switch } from "react-router-dom";
 import Dashboard from "./pages/Dashboard";
 import { useState } from "react";
-import {
-  Auth0Provider,
-  withAuthenticationRequired
-} from "@auth0/auth0-react";
+import { Auth0Provider, withAuthenticationRequired } from "@auth0/auth0-react";
 import { createBrowserHistory } from "history";
 import Profile from "./pages/Profile";
-import Devices from './pages/Devices';
+import Devices from "./pages/Devices";
 import Alerts from "./pages/Alerts";
 
 export const history = createBrowserHistory();
@@ -43,25 +40,30 @@ export default function App() {
         <header className="header">
           <NavBar setTheme={setTheme}></NavBar>
         </header>
-          <div className="d-flex align-items-stretch">
-            <SideBar></SideBar>
-            <Router history={history}>
-              <Switch>
-                <ProtectedRoute
-                  exact
-                  path="/"
-                  component={Dashboard}
-                ></ProtectedRoute>
-                <ProtectedRoute
-                  path="/profile"
-                  component={Profile}
-                ></ProtectedRoute>
-                <ProtectedRoute path="/devices"
-                component={Devices}></ProtectedRoute>
-                <ProtectedRoute path="/alerts" component={Alerts}></ProtectedRoute>
-              </Switch>
-            </Router>
-          </div>
+        <div className="d-flex align-items-stretch">
+          <SideBar></SideBar>
+          <Router history={history}>
+            <Switch>
+              <ProtectedRoute
+                exact
+                path="/"
+                component={Dashboard}
+              ></ProtectedRoute>
+              <ProtectedRoute
+                path="/profile"
+                component={Profile}
+              ></ProtectedRoute>
+              <ProtectedRoute
+                path="/devices"
+                component={Devices}
+              ></ProtectedRoute>
+              <ProtectedRoute
+                path="/alerts"
+                component={Alerts}
+              ></ProtectedRoute>
+            </Switch>
+          </Router>
+        </div>
       </div>
     </Auth0Provider>
   );

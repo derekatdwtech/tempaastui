@@ -37,6 +37,7 @@ stages:
           scriptType: bash
           scriptLocation: inlineScript
           inlineScript: |
+            az storage blob delete-batch -s $web --account-name $(storageAccountName) --account-key $(containerKey)
             az storage blob upload-batch -s build/. -d '$web' --account-name $(storageAccountName) --account-key $(containerKey)
 
       # - task: ArchiveFiles@2
