@@ -11,8 +11,29 @@ const Alerts = () => {
       <section className="no-padding-top no-padding-bottom">
         <div className="container-fluid">
           <div className="row">
-            <h2>Alert rules coming soon!</h2>
-            <Loader></Loader>
+            <div className="col-lg-8 col-md-12 col-sm-12">
+              <div className="block">
+                <div className="title">
+                  Alert Rules
+                </div>
+                <hr></hr>
+                <div className="block-body">
+                  Coming Soon
+                </div>
+              </div>
+            </div>
+            {/* Recent Alerts */}
+            <div className="col-lg-4 col-md-12 col-sm-12">
+              <div className="block">
+                <div className="title">
+                  Recent Alerts
+                </div>
+                <hr></hr>
+                <div className="block-body">
+                  Coming Soon
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>

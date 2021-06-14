@@ -30,6 +30,8 @@ export default function App() {
       redirectUri={window.location.origin}
       onRedirectCallback={onRedirectCallback}
       audience="app.tempaast.com"
+      useRefreshTokens={true}
+      cacheLocation="localstorage"
     >
       <div>
         <link

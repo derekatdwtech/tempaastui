@@ -7,7 +7,7 @@ const StatisticBlock = (props) => {
         <div className="progress-details d-flex align-items-end justify-content-between">
           <div className="title">
             <div className="icon">
-              <i className="icon-user-1"></i>
+              <i className={props.icon}></i>
             </div>
             <strong>{props.title}</strong>
           </div>
@@ -17,7 +17,7 @@ const StatisticBlock = (props) => {
           <div
             role="progressbar"
             style={{width: "30%"}}
-            aria-valuenow="30"
+            aria-valuenow={props.value}
             aria-valuemin="0"
             aria-valuemax="100"
             className="progress-bar progress-bar-template dashbg-1"

@@ -78,18 +78,24 @@ const Dashboard = () => {
   }, []);
 
   return (
-    <PageContent title="Dashboard" showFilters={true}>
-      {!isLoading && (
+    <PageContent title="Dashboard" showFilters={true} isLoading={isLoading}>
         <section className="no-padding-top no-padding-bottom">
           <div className="container-fluid">
             <div className="row">
               <StatisticBlock
-                title="Temperature Probes Active"
+                title="Devices Active"
                 value={probes.length}
+                icon={"icon-computer"}
               />
               <StatisticBlock
                 title="Average Temperature"
                 value={average(tempData)}
+                icon="fa fa-calculator"
+              />
+              <StatisticBlock
+                title="Recent Alerts"
+                value={5}
+                icon="fa fa-bell-o"
               />
             </div>
             <div className="row">
@@ -101,8 +107,6 @@ const Dashboard = () => {
             </div>
           </div>
         </section>
-      )}
-      {isLoading && <Loader></Loader>}
     </PageContent>
   );
 };

@@ -43,16 +43,19 @@ const NavBar = (props) => {
                 );
               })}
             </div>
-            {
-              isAuthenticated &&
-            <div className="list-inline-item logout">
-              <a id="logout" onClick={() =>   logout({ returnTo: window.location.origin })} className="nav-link">
-                {" "}
-                <span className="d-none d-sm-inline">Logout </span>
-                <i className="icon-logout"></i>
-              </a>
-            </div> 
-          }
+            {isAuthenticated && (
+              <div className="list-inline-item logout">
+                <a
+                  id="logout"
+                  onClick={() => logout({ returnTo: window.location.origin })}
+                  className="nav-link"
+                >
+                  {" "}
+                  <span className="d-none d-sm-inline">Logout </span>
+                  <i className="icon-logout"></i>
+                </a>
+              </div>
+            )}
           </div>
         </div>
       </nav>
