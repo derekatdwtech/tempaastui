@@ -9,6 +9,7 @@ import Modal from "../components/modal/Modal";
 const Alerts = () => {
   const { getAccessTokenSilently } = useAuth0();
   const [alertConfigs, setAlertConfigs] = useState([]);
+  const [alertHistory, setAlertHistory] = useState([]);
   const [isCreateAlertButtonDiabled, setIsCreateAlertButtonDisabled] =
     useState(false);
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
@@ -24,9 +25,19 @@ const Alerts = () => {
     })
       .then((res) => res.json())
       .then((data) => {
-        setAlertConfigs((prevState) => {
-          return [...prevState, data];
-        });
+        setAlertConfigs(data);
+      });
+  };
+
+  const getAlertHistory = async () => {
+    let token = await getAccessTokenSilently();
+    const headers = { Authorization: `Bearer ${token}` };
+
+    fetch(`${Config.apiUrl}/api/alert/history?count=5`, { headers: headers })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+        setAlertHistory(data);
       });
   };
 
@@ -41,30 +52,34 @@ const Alerts = () => {
 
   const getAlertModal = () => {
     return (
-      <Modal show={isEditModalVisible} handleClose={() => closeModal()} title="Alert Configuration">
+      <Modal
+        show={isEditModalVisible}
+        handleClose={() => closeModal()}
+        title="Alert Configuration"
+      >
         <form>
-          <div class="form-group">
+          <div className="form-group">
             <label>First Name</label>
             <input
               type="text"
               placeholder="First Name"
-              class="form-control"
+              className="form-control"
             />
           </div>
-          <div class="form-group">
+          <div className="form-group">
             <label>Last Name</label>
             <input
               type="text"
               placeholder="Last Name"
-              class="form-control"
+              className="form-control"
             />
           </div>
-          <div class="form-group">
+          <div className="form-group">
             <label>Phone Number</label>
             <input
               type="phone"
               placeholder="Phone Number"
-              class="form-control"
+              className="form-control"
             />
           </div>
         </form>
@@ -85,9 +100,9 @@ const Alerts = () => {
           setIsLoading(false);
         });
     }
-
+    getAlertHistory();
     getAlertConfigs();
-  }, []);
+  }, [setAlertConfigs]);
 
   return (
     <PageContent title="Alerting" isLoading={isLoading}>
@@ -114,21 +129,24 @@ const Alerts = () => {
                         </thead>
                         <tbody>
                           {alertConfigs.map((a, i) => {
-                            <tr key={i}>
-                              <td>{a.firstName}</td>
-                              <td>{a.lastName}</td>
-                              <td>{a.phoneNumber}</td>
-                              <td>{a.probe_id}</td>
-                              <td>
-                                <button
-                                  type=""
-                                  className="btn btn-default"
-                                  onClick={() => editAlertConfig(a)}
-                                >
-                                  <i className="fa fa-edit"></i>
-                                </button>
-                              </td>
-                            </tr>;
+                            console.log(a);
+                            return (
+                              <tr key={i}>
+                                <td>{a.firstName}</td>
+                                <td>{a.lastName}</td>
+                                <td>{a.phoneNumber}</td>
+                                <td>{a.probe_id}</td>
+                                <td>
+                                  <button
+                                    type=""
+                                    className="btn btn-default"
+                                    onClick={() => editAlertConfig(a)}
+                                  >
+                                    <i className="fa fa-edit"></i>
+                                  </button>
+                                </td>
+                              </tr>
+                            );
                           })}
                         </tbody>
                       </table>
@@ -159,10 +177,41 @@ const Alerts = () => {
             </div>
             {/* Recent Alerts */}
             <div className="col-lg-4 col-md-12 col-sm-12">
-              <div className="block">
+              <div className="messages-block block">
                 <div className="title">Recent Alerts</div>
-                <hr></hr>
-                <div className="block-body">Coming Soon</div>
+                {alertHistory.length === 0 && (
+                  <div className="messages">Coming Soon</div>
+                )}
+                {alertHistory.length > 0 && (
+                  <div className="messages">
+                    {alertHistory.map((alert, i) => {
+                      return (
+                        <a
+                          className="message d-flex align-items-center"
+                          key={i}
+                        >
+                          <div className="profile">
+                            <i className="fa fa-2x fa-exclamation"></i>
+                          </div>
+                          <div className="content">
+                            <strong className="d-block">
+                              Probe ID: {JSON.parse(alert.details).probe_id}
+                            </strong>
+                            <span className="d-block">
+                              {JSON.parse(alert.details).temperature.c +
+                                "/" +
+                                JSON.parse(alert.details).temperature.f}
+                            </span>
+                            <small className="date d-block">
+                              {alert.sendTime}
+                            </small>
+                          </div>
+                          <hr></hr>
+                        </a>
+                      );
+                    })}
+                  </div>
+                )}
               </div>
             </div>
           </div>
