@@ -10,23 +10,65 @@ const Alerts = () => {
   const { getAccessTokenSilently } = useAuth0();
   const [alertConfigs, setAlertConfigs] = useState([]);
   const [alertHistory, setAlertHistory] = useState([]);
-  const [isCreateAlertButtonDiabled, setIsCreateAlertButtonDisabled] =
+  const [alertFormData, setAlertFormData] = useState({});
+  const [probes, setProbes] = useState([]);
+
+  const [isCreateAlertButtonDisabled, setIsCreateAlertButtonDisabled] =
     useState(false);
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
-  const PostApiConfig = async (config) => {
+  const postAlertConfig = async (event) => {
     let token = await getAccessTokenSilently();
-    const headers = { Authorization: `Bearer ${token}` };
-
+    const headers = {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    };
+    console.log(JSON.stringify(alertFormData));
     fetch(`${Config.apiUrl}/api/alert/config`, {
       headers: headers,
       method: "POST",
+      body: JSON.stringify(alertFormData),
     })
-      .then((res) => res.json())
-      .then((data) => {
-        setAlertConfigs(data);
-      });
+      .then((res) => {
+        if (res.status >= 400) {
+          throw new Error(
+            `Failed to create alert configuration. Status: ${res.status}}`
+          );
+        }
+        return res.json();
+      })
+      .then(
+        (data) => {
+          setAlertConfigs((prevState) => [...prevState, data]);
+          setIsEditModalVisible(false);
+          setAlertFormData({});
+        },
+        (err) => {
+          console.log(err);
+        }
+      );
+  };
+
+  const handleFormChange = (event) => {
+    setAlertFormData({
+      ...alertFormData,
+      [event.target.name]: event.target.value.trim(),
+    });
+  };
+
+  const getProbeConfigs = async () => {
+    try {
+      const token = await getAccessTokenSilently();
+      let headers = { Authorization: `Bearer ${token}` };
+      fetch(`${Config.apiUrl}/api/probe/config/list`, { headers: headers })
+        .then((res) => res.json())
+        .then((data) => {
+          setProbes(data);
+        });
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const getAlertHistory = async () => {
@@ -42,11 +84,13 @@ const Alerts = () => {
   };
 
   const editAlertConfig = (a) => {
+    setAlertFormData(a);
     setIsEditModalVisible(true);
     console.log("Attempting to show Modal");
   };
 
   const closeModal = () => {
+    setAlertFormData({});
     setIsEditModalVisible(false);
   };
 
@@ -55,15 +99,19 @@ const Alerts = () => {
       <Modal
         show={isEditModalVisible}
         handleClose={() => closeModal()}
+        submit={() => postAlertConfig()}
         title="Alert Configuration"
       >
-        <form>
+        <form onSubmit={() => postAlertConfig()}>
           <div className="form-group">
             <label>First Name</label>
             <input
               type="text"
               placeholder="First Name"
               className="form-control"
+              name="firstName"
+              onChange={handleFormChange}
+              value={alertFormData ? alertFormData.firstName : ""}
             />
           </div>
           <div className="form-group">
@@ -72,20 +120,45 @@ const Alerts = () => {
               type="text"
               placeholder="Last Name"
               className="form-control"
+              onChange={handleFormChange}
+              name="lastName"
+              value={alertFormData ? alertFormData.lastName : ""}
             />
           </div>
           <div className="form-group">
             <label>Phone Number</label>
             <input
               type="phone"
-              placeholder="Phone Number"
+              placeholder="e.g. +15551237890"
               className="form-control"
+              onChange={handleFormChange}
+              name="phoneNumber"
+              value={alertFormData ? alertFormData.phoneNumber : ""}
             />
+          </div>
+          <div className="form-group">
+            <label>Device</label>
+            <select
+              name="probe_id"
+              className="form-control mb-3"
+              onChange={handleFormChange}
+              value={alertFormData ? alertFormData.probe_id : ""}
+            >
+              <option>Select Device</option>
+              {probes.map((p, i) => {
+                return (
+                  <option value={p.rowKey} key={i}>
+                    {p.nickname}
+                  </option>
+                );
+              })}
+            </select>
           </div>
         </form>
       </Modal>
     );
   };
+  
   useEffect(() => {
     async function getAlertConfigs() {
       let token = await getAccessTokenSilently();
@@ -94,12 +167,11 @@ const Alerts = () => {
         .then((res) => res.json())
         .then((data) => {
           console.log(data);
-          setAlertConfigs((prevState) => {
-            return [...prevState, data];
-          });
+          setAlertConfigs(data);
           setIsLoading(false);
         });
     }
+    getProbeConfigs();
     getAlertHistory();
     getAlertConfigs();
   }, [setAlertConfigs]);
@@ -129,7 +201,6 @@ const Alerts = () => {
                         </thead>
                         <tbody>
                           {alertConfigs.map((a, i) => {
-                            console.log(a);
                             return (
                               <tr key={i}>
                                 <td>{a.firstName}</td>
@@ -166,7 +237,7 @@ const Alerts = () => {
                 )}
                 <br></br>
                 <button
-                  disabled={isCreateAlertButtonDiabled}
+                  disabled={isCreateAlertButtonDisabled}
                   type=""
                   onClick={() => editAlertConfig()}
                   className="btn btn-primary"
@@ -195,12 +266,13 @@ const Alerts = () => {
                           </div>
                           <div className="content">
                             <strong className="d-block">
-                              Probe ID: {JSON.parse(alert.details).probe_id}
+                              Device: {JSON.parse(alert.details).nickname}
                             </strong>
                             <span className="d-block">
                               {JSON.parse(alert.details).temperature.c +
-                                "/" +
-                                JSON.parse(alert.details).temperature.f}
+                                "C/" +
+                                JSON.parse(alert.details).temperature.f +
+                                "F"}
                             </span>
                             <small className="date d-block">
                               {alert.sendTime}

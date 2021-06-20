@@ -2,7 +2,7 @@ import React from "react";
 import ModalBody from "./components/ModalBody";
 import ModalHeader from "./components/ModalHeader";
 
-const Modal = ({ handleClose, show, children, title }) => {
+const Modal = ({ handleClose, show, children, title, submit }) => {
   const modalClass = show
     ? "modal-open modal fade text-left show"
     : "modal fade text-left";
@@ -22,6 +22,9 @@ const Modal = ({ handleClose, show, children, title }) => {
           <ModalHeader title={title} handleClose={()=> handleClose()}></ModalHeader>
           <ModalBody>{children}</ModalBody>
           <div className="modal-footer">
+          <button type="button" className="btn btn-primary" onClick={()=> submit()}>
+              Save changes
+            </button>
             <button
               type="button"
               data-dismiss="modal"
@@ -29,9 +32,6 @@ const Modal = ({ handleClose, show, children, title }) => {
               onClick={() => handleClose()}
             >
               Close
-            </button>
-            <button type="button" className="btn btn-primary">
-              Save changes
             </button>
           </div>
         </div>
