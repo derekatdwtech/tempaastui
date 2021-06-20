@@ -120,7 +120,7 @@ const Devices = () => {
                   name={p.nickname}
                   subName={p.rowKey}
                   onClick={() => editProbeConfig(p)}
-                  styles={{cursor:"pointer"}}
+                  
                 ></Cardbutton>;
               })}
           </div>

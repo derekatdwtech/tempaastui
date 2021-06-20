@@ -8,6 +8,7 @@ import { createBrowserHistory } from "history";
 import Profile from "./pages/Profile";
 import Devices from "./pages/Devices";
 import Alerts from "./pages/Alerts";
+import Donate from "./pages/Donate";
 
 export const history = createBrowserHistory();
 
@@ -62,6 +63,10 @@ export default function App() {
               <ProtectedRoute
                 path="/alerts"
                 component={Alerts}
+              ></ProtectedRoute>
+              <ProtectedRoute
+                path="/donate"
+                component={Donate}
               ></ProtectedRoute>
             </Switch>
           </Router>
