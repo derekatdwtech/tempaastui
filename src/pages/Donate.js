@@ -25,21 +25,6 @@ const Donate = () => {
                     like to support this project, please use the donation links
                     below.
                   </span>
-                  <ol>
-                    <li>
-                      I'd generate one Api Key for each Raspberry Pi. Adding
-                      descriptions to Api Key's will be released soon.
-                    </li>
-                    <li>
-                      Don't share your Api Keys. They are uniquely tied to your
-                      user. If you give your friend your key, you will see your
-                      friends' data....and that's just naughty.
-                    </li>
-                    <li>
-                      Expired Api Keys will appear in your dashboard if they've
-                      epxpired. Delete them if you'd like.
-                    </li>
-                  </ol>
                 </div>
               </div>
             </div>
